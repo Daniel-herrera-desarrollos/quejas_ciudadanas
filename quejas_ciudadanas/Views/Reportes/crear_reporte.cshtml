@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "Crear reporte";
+}
+<link rel="stylesheet" href="~/css/crear_reportes.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/leaflet.css" asp-append-version="true" />
+
+
+
+
+<body class="bg-light">
+
+    <div class="container py-4">
+        <h2 class="mb-4 titulo_pagina">Crear un nuevo reporte</h2>
+        <button class="btn btn-primary ubicarme_boton" onclick="ubicarme()">📍 Usar mi ubicación</button>
+
+        <div id="map"></div>
+
+        <table class="table table-bordered text-center table_ubicacion_inicio">
+            <thead class="table_ubicacion">
+                <tr>
+                    <th>LATITUD</th>
+                    <th>LONGITUD</th>
+                    <th>GEOHASH</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="lat">-</td>
+                    <td id="lon">-</td>
+                    <td id="geohash">-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form class="mt-4">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="problematica" class="form-label">Problemática</label>
+                    <select class="form-select" id="problemaSelect"> 
+                        <option value="" disabled selected>Seleccione...</option>
+                        @foreach (var item in ViewBag.Problemas)
+                        {
+                            <option value="@item.Id_Problema">@item.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="clase" class="form-label">Clase de problemática</label>
+                    <select class="form-select" id="claseProblemaSelect" disabled>
+
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="tipo" class="form-label">Tipo de problema</label>
+                    <select class="form-select" id="tipoProblemaSelect" disabled>
+
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="departamento" class="form-label">Departamento</label>
+                    <select class="form-select" id="selectDepto">
+                        <option value="" disabled selected>Seleccione...</option>
+                        @foreach (var depto in ViewBag.Deptos)
+                        {
+                            <option value="@depto.A001CODIGO">@depto.A001DESCRIPCION</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="ciudadForm" class="form-label">Ciudad</label>
+                    <select class="form-select" id="selectCiudad">
+
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="direccionInput" class="form-label">Dirección</label>
+                <input type="text" class="form-control" id="direccionInput" placeholder="Ingrese dirección">
+            </div>
+            <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción del problema</label>
+                <textarea class="form-control" id="descripcion" maxlength="250" rows="3"></textarea>
+            </div>
+        </form>
+
+        <div class="row">
+            <!-- Previsualización de imágenes -->
+            <script>
+                for (let i = 0; i < 6; i++) {
+                    document.write(`
+                          <div class="col-md-2 col-mb-2">
+                             <div class="image-box active-border" onclick="document.getElementById('file${i}').click()">
+                              <img id="preview${i}" class="preview-img" src="" alt="" style="display: none;">
+                                <i id="icon${i}" class="bi bi-card-image icono_imagen"></i>
+                              <input type="file" id="file${i}" accept="image/*" onchange="previewImage(event, ${i})">
+                            </div>
+                          </div>
+                        `);
+                }
+            </script>
+        </div>
+        <div class="div_enviar_formulario_boton">
+            <button class="btn btn-primary enviar_formulario_boton">Crear reporte</button>
+        </div>
+        
+    </div>
+
+    <!-- Modal de error -->
+    <div class="modal fade" id="modalError" tabindex="-1" aria-labelledby="modalErrorLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-primary">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalErrorLabel">Mensaje</h5>
+                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <span id="mensajeError">Todos los campos son obligatorios.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/leaflet.js" asp-append-version="true"></script>
+<script src="~/js/crear_reportes.js" asp-append-version="true"></script>
+

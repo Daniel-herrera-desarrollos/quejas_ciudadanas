@@ -1,0 +1,317 @@
+﻿@{
+    ViewData["Title"] = "Ver reporte";
+}
+<link rel="stylesheet" href="~/css/buscar_reportes.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/leaflet.css" asp-append-version="true" />
+
+
+<body class="bg-light">
+
+    <div class="container py-4">
+
+        <h2 class="mb-4 titulo_pagina">consultar reportes</h2>
+
+        <form class="mt-4 mb-2 diseno_filtro">
+            <div class="row mb-3">
+                <div class="col-md-11">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <label for="problematica" class="form-label label_filtros">Problemática</label>
+                            <select class="form-select" id="problemaSelect">
+                                <option value=""  selected>Seleccione...</option>
+                                @foreach (var item in ViewBag.Problemas)
+                                {
+                                    <option value="@item.Id_Problema">@item.Nombre</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="clase" class="form-label label_filtros">Clase de problemática</label>
+                            <select class="form-select" id="claseProblemaSelect" ></select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="tipo" class="form-label label_filtros">Tipo de problema</label>
+                            <select class="form-select" id="tipoProblemaSelect" ></select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="departamento" class="form-label label_filtros">Departamento</label>
+                            <select class="form-select" id="selectDepto">
+                                <option value="00"  selected>Seleccione...</option>
+                                @foreach (var depto in ViewBag.Deptos)
+                                {
+                                    <option value="@depto.A001CODIGO">@depto.A001DESCRIPCION</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="ciudadForm" class="form-label label_filtros">Ciudad</label>
+                            <select class="form-select" id="selectCiudad" disabled>
+                                <option value="00" selected>Seleccione...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="Estado_del_caso" class="form-label label_filtros">Estado</label>
+                            <select class="form-select" id="Estado_del_caso">
+                                <option value="" disabled selected>Seleccione...</option>
+                                @foreach (var estado in ViewBag.estado_caso)
+                                {
+                                    <option value="@estado.Id_estado_caso">@estado.Descripcion</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <div class="col-md-12">
+                        <label for="" class="form-label"></label>
+                        <button class="btn btn-primary enviar_formulario_boton w-100">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+
+        <table id="tablaQuejas" class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+@*                     <th onclick="ordenarTabla('lat')">Latitud</th>
+                    <th onclick="ordenarTabla('lon')">Longitud</th> *@
+                    <th onclick="ordenarTabla('problema')">Problema</th>
+                    <th onclick="ordenarTabla('clase')">Clase</th>
+                    <th onclick="ordenarTabla('tipo')">Tipo</th>
+                    <th onclick="ordenarTabla('departamento')">Departamento</th>
+                    <th onclick="ordenarTabla('ciudad')">Ciudad</th>
+                    <th onclick="ordenarTabla('fecha')">Fecha</th>
+                    <th onclick="ordenarTabla('estado')">Estado</th>
+                    <th onclick="ordenarTabla('cantidad')">Cantidad</th>
+                    <th>UBICAR</th>
+                    <th>VER</th>
+                </tr>
+            </thead>
+            <tbody id="tablaBody"></tbody>
+        </table>
+
+        <nav>
+            <ul class="pagination justify-content-end" id="paginacion"></ul>
+        </nav>
+
+        <div id="map"></div>
+
+        <table class="table table-bordered text-center table_ubicacion_inicio">
+            <thead class="table_ubicacion">
+                <tr>
+                    <th class="mayusculas row m-0 text_alin_left">                      
+                        <h6 class="mb-0 col-1" id="">caso:</h6>
+                        <h6 class="mb-0 col-9" id="titulo">Reporte de Incidencia</h6>
+                        <span class="badge bg-light text-dark col-2" id="fecha">Fecha</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border_black">
+                    <td>
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <p class="mb-1 fw-bold">Problema:</p>
+                                <p id="problema" class="problema-text">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-1 fw-bold">Clase:</p>
+                                <p id="clase" class="clase-text">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-1 fw-bold">Tipo:</p>
+                                <p id="tipo" class="tipo-text">-</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-1 fw-bold">Estado:</p>
+                                <p><span class="badge estado-badge" id="estado">-</span></p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-1 fw-bold">Cantidad de reportes:</p>
+                                <p id="reportes" class="reportes-text">-</p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-2">
+                                <p class="mb-1 fw-bold">Departamento:</p>
+                                <p id="departamento" class="departamento-text">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-1 fw-bold">Ciudad:</p>
+                                <p id="ciudad" class="ciudad-text">-</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-1 fw-bold">Tipo doc:</p>
+                                <p id="tipoDocumento" class="tipo-doc-text">-</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-1 fw-bold">Número identificación:</p>
+                                <p id="numeroIdentificacion" class="num-id-text">-</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-1 fw-bold">Nombre:</p>
+                                <p id="nombreReportador" class="nombre-text">-</p>
+                            </div>
+
+                        </div>
+
+                    </td>
+                </tr>
+                <tr class="border_black">
+                    <td>
+                        <div class="row mb-3 mt-3">
+                            <div class="col-md-6">
+                                <p class="mb-1 fw-bold">Dirección:</p>
+                                <p id="direccion" class="justifi_text">-</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 fw-bold">Descripción:</p>
+                                <p id="descripcion" class="justifi_text">-</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="mb-3">
+                    <td>
+
+                        <div class="row mb-3 barra_lateral_mb">
+                            <div class="col-md-12 barra_lateral_2">
+                                <div class="container my-8">
+                                    <div class="carousel-container">
+                                        <div id="carouselMinimo" class="carousel slide" data-bs-ride="carousel">
+                                            <!-- Contenido del carrusel (se generará dinámicamente) -->
+                                            <div class="carousel-inner rounded">
+                                                <!-- Aquí se generarán los items del carrusel -->
+                                            </div>
+
+                                            <!-- Botones de navegación -->
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselMinimo" data-bs-slide="prev">
+                                                <i class="bi bi-caret-left-fill flechas_slider"></i>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselMinimo" data-bs-slide="next">
+                                                <i class="bi bi-caret-right-fill flechas_slider"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+      
+                <br />
+                <tr>
+                    <td id="">
+                        <!------------------manejo de carta---------------------->
+
+                        <!------------------manejo de carta---------------------->
+                        <div class="card">
+                            <!---------manejo de listas dinamicas------------------------------>
+                            <div class="container my-8">
+                                <div class="row">
+                                    <div class="col-lg-12 mx-auto">
+                                        <!-- Contenedor de la lista agrupada -->
+                                        <div id="listaAgrupada" class="list-group mb-4">
+                                            <!-- El contenido se generará dinámicamente -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!---------manejo de listas dinamicas------------------------------>
+
+                        </div>
+                    </td>
+                </tr>
+                <br/>
+                <tr class="class_reportes_respuesta">
+                    <td id="">
+                        <!---------manejo de respuestas del caso--------------------------->
+                        <div class="container">
+                            <h2 class="text-center mb-4 titulo_resouesta">Respuestas sobre el casos</h2>
+
+                            <!-- Aquí se renderizará la lista de documentos -->
+                            <div id="documentosContainer" class="contenedor-lista"></div>
+                        </div>
+                        <!---------manejo de respuestas del caso--------------------------->
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <div class="d-grid gap-2 mt-3">
+                            <button class="btn btn-primary responder-btn" data-bs-toggle="modal" data-bs-target="#formModal" type="button" id="responder">Responder caso</button>
+                        </div>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+        
+
+    </div>
+    <!--------------------->
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-white informes_titulo_reportes">
+                    <h5 class="modal-title" id="formModalLabel">ACTUALIZAR DE CASO</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formularioEnvio" action="/TuControlador/TuAccion" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="selectOpcion" class="form-label">Seleccione una opción</label>
+                            <select class="form-select" id="selectOpcion" name="opcion" required>
+                                <option value="" disabled selected>Seleccione...</option>
+                                @foreach (var estado in ViewBag.estado_caso)
+                                {
+                                    if (@estado.Id_estado_caso != 1)
+                                    {
+                                        <option value="@estado.Id_estado_caso">@estado.Descripcion</option>
+                                    }
+                                    
+                                }
+                            </select>
+                        </div>
+                        <input type="number" name="id_caso" value="" id="caso_responder_form" hidden/>
+                        <div class="mb-3">
+                            <label for="comentario" class="form-label">Comentario</label>
+                            <textarea class="form-control" id="comentario" name="comentario" rows="4" required maxlength="250"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fotos" class="form-label">Subir hasta 3 fotos (opcional)</label>
+                            <input class="form-control" type="file" id="fotos" name="fotos" accept="image/*" multiple onchange="if(this.files.length > 3){ alert('Máximo 3 imágenes'); this.value=''; }">
+                            <small class="text-muted">Máximo 3 imágenes (jpg, png, etc.).</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="archivoPdf" class="form-label">Subir archivo PDF (opcional)</label>
+                            <input class="form-control" type="file" id="archivoPdf" name="archivoPdf" accept="application/pdf">
+                            <small class="text-muted">Solo se permite un archivo PDF.</small>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success">Enviar</button>
+                            <button type="button" class="btn btn-primary " data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de error -->
+
+</body>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/leaflet.js" asp-append-version="true"></script>
+<script src="~/js/buscar_reportes.js" asp-append-version="true"></script>

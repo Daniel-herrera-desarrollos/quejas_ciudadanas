@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "login";
+}
+
+<link rel="stylesheet" href="~/css/home.css" asp-append-version="true" />
+
+<video class="video-fondo" autoplay muted loop playsinline>
+	<source src="~/video/Fondo_inicio.mp4" type="video/mp4">
+	Tu navegador no soporta video HTML5.
+</video>
+
+<div class="container" id="container">
+	<!------------inicio contenedor del formulario de registro de suario -------------------->
+	<div class="form-container sign-up-container">
+		<form asp-controller="Home" asp-action="nuevo_usuario" method="post">
+			<h1>Crear una cuenta</h1>
+			<div class="input-grid-30-70">
+				<select name="tipo_doc_regist" required id="tipo_doc_regist">
+					<option value="" disabled selected>Tipo</option>
+					@foreach (var tipo in ViewBag.TiposIdentificacion)
+					{
+						<option value="@tipo.Id_identificacion">@tipo.Descripcion</option>
+					}
+				</select>
+
+				<input type="text" placeholder="Número de identificación" name="numero_doc_regist" required id="numero_doc_regist" />
+			</div>
+	
+			<input type="text" placeholder="Nombres" name="nombre_regist" required id="nombre_regist" />
+			<input type="text" placeholder="Apellidos" name="apellido_regist" required id="apellido_regist" />
+			<input type="email" placeholder="Correo electrónico" name="email_regist" required id="email_regist" />
+			<input type="password" placeholder="Contraseña" name="clave_regist" required id="clave_regist" />
+
+			<div class="input-grid-70-30">
+				<input type="date" placeholder="Fecha de nacimiento" name="fech_nacimien_regist" required id="fech_nacimien_regist" />
+
+				<select name="sexo_regist" required id="sexo_regist">
+					<option value="" disabled selected>Sexo</option>
+					@foreach (var sexo in ViewBag.Sexos)
+					{
+						<option value="@sexo.Id_sexo">@sexo.Descripcion</option>
+					}
+				</select>
+
+			</div>
+			<div class="tipo-usuario input-grid-50-50">
+				<label><input type="radio" name="tipo_usuario" value="1" required> Ciudadano</label>
+				<label><input type="radio" name="tipo_usuario" value="2"> Funcionario</label>
+			</div>
+
+			<button>Registrarte</button>
+		</form>
+	</div>
+	<!------------fin contenedor del formulario de registro de suario -------------------->
+	<!------------contenedor del formulario de inicio de suario -------------------->
+	<div class="form-container sign-in-container">
+		<form asp-controller="Home" asp-action="inicio_secion" method="post">
+			<h1>Iniciar sesión</h1>
+			<div class="social-container">
+				<a href="#" class=""></a>
+			</div>
+			<input type="text" placeholder="Número de identificación" id="numero_identificacion_inicio" name="NumeroIdentificacion_login" />
+			<input type="password" placeholder="Contraseña" id="contrasena_inicio" name="Contrasena_login" />
+			<a href="#" style="opacity:0;"></a>
+			<button>Acceder</button>
+		</form>
+	</div>
+	<!------------fin contenedor del formulario de inicio de suario -------------------->
+	<!------------inicio manejo de animacion del formulario entre inicio o registro usuario -------------------->
+	<div class="overlay-container">
+		<div class="overlay">
+			<div class="overlay-panel overlay-left">
+				<h1>¡Bienvenido de nuevo!</h1>
+				<p>Ingresa tus datos personales y accede a nuestra plataforma.</p>
+				<button class="ghost" id="signIn">Iniciar sesión</button>
+			</div>
+			<div class="overlay-panel overlay-right">
+				<h1>¡No tienes una cuenta!</h1>
+				<p>Registra tus datos personales para crear una cuenta</p>
+				<button class="ghost" id="signUp">Registrarte</button>
+			</div>
+		</div>
+	</div>
+	<!------------fin manejo de animacion del formulario entre inicio o registro usuario -------------------->
+</div>
+
+
+
+
+<script src="~/js/home.js" asp-append-version="true"></script>
+

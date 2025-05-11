@@ -1,0 +1,110 @@
+﻿#map {
+    height: 400px;
+    margin-bottom: 15px;
+}
+
+.preview-img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid #ccc;
+}
+
+.image-box {
+    position: relative;
+   /* border: 1px dashed #999;*/
+    height: 110px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #f8f9fa;
+}
+
+    .image-box input[type="file"] {
+        display: none;
+    }
+
+    .image-box .placeholder {
+        font-size: 32px;
+        color: #aaa;
+    }
+
+
+:root {
+    --border-color: #1c6ea4; /* Cambia el color desde aquí */
+}
+
+@keyframes borderAnimation {
+    0% {
+        background-position: 0 0, /* izquierda */
+        -23.6px 0, /* arriba */
+        100% -23.6px, /* derecha */
+        0 100%; /* abajo */
+    }
+
+    100% {
+        background-position: 0 -23.6px, 0 0, 100% 0, -23.6px 100%;
+    }
+}
+
+.active-border {
+    background-image: repeating-linear-gradient(180deg, var(--border-color) 0, var(--border-color) 14px, transparent 14px, transparent 23.6px), repeating-linear-gradient(90deg, var(--border-color) 0, var(--border-color) 14px, transparent 14px, transparent 23.6px), repeating-linear-gradient(0deg, var(--border-color) 0, var(--border-color) 14px, transparent 14px, transparent 23.6px), repeating-linear-gradient(270deg, var(--border-color) 0, var(--border-color) 14px, transparent 14px, transparent 23.6px);
+    background-size: 5px 100%, /* izquierda */
+    100% 5px, /* arriba */
+    5px 100%, /* derecha */
+    100% 5px; /* abajo */
+
+    background-position: 0 0, 0 0, 100% -23.6px, 0 100%;
+    background-repeat: no-repeat;
+    animation: borderAnimation 2.8s linear infinite;
+    box-sizing: border-box;
+}
+.icono_imagen {
+    font-size: 50px;
+    opacity: 0.6;
+    color: #1c6ea4;
+}
+#geohash {
+    text-transform: uppercase;
+}
+.table_ubicacion {
+    background: #2d344d;
+    color:white;
+}
+.table_ubicacion_inicio {
+    border: solid 3px #2d344d87;
+}
+#map {
+    margin-bottom: 0px;
+    border: solid 3px #2d344d87;
+}
+.ubicarme_boton {
+    border-radius: 0;
+    border: none;
+    background: #2d344d;
+    color:white;
+    margin-bottom:0;
+}
+.titulo_pagina {
+    text-transform: uppercase;
+    margin: auto;
+    text-align: center;
+}
+.div_enviar_formulario_boton{
+    text-align:center !important;
+    margin-top:50px !important;
+
+}
+.enviar_formulario_boton {
+    border-radius: 0;
+    border: none;
+    background: #2d344d;
+    color: white;
+    margin-bottom: 0;
+    margin: auto;
+    width:180px;
+    padding:5px;
+    font-size:25px;
+}
+/*#2d344d*/
